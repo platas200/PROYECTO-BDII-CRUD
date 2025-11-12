@@ -78,4 +78,5 @@ public class Producto {
             JOptionPane.showMessageDialog(null, "Error al eliminar producto: " + e.getMessage());
         }
     }
+
 }

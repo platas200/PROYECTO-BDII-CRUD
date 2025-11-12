@@ -1,7 +1,12 @@
 package Proyecto_BDII;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main extends JFrame {
 
@@ -60,8 +65,36 @@ public class Main extends JFrame {
         Estilos.aplicarEstiloTabla(tabla);
         JScrollPane scroll = new JScrollPane(tabla);
 
-        // Acciones
+        // --- Al hacer clic en una fila, se cargan los datos en los campos ---
+        tabla.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting() && tabla.getSelectedRow() != -1) {
+                txtId.setText(tabla.getValueAt(tabla.getSelectedRow(), 0).toString());
+                txtNombre.setText(tabla.getValueAt(tabla.getSelectedRow(), 1).toString());
+                txtDesc.setText(tabla.getValueAt(tabla.getSelectedRow(), 2).toString());
+                txtPrecio.setText(tabla.getValueAt(tabla.getSelectedRow(), 3).toString());
+                txtStock.setText(tabla.getValueAt(tabla.getSelectedRow(), 4).toString());
+            }
+        });
+
         crear.addActionListener(e -> {
+            List<String> errores = new ArrayList<>();
+            List<JTextField> camposErroneos = new ArrayList<>();
+
+            if (!esDouble(txtPrecio)) {
+                errores.add("• El campo 'Precio' debe ser un número real (usa punto decimal).");
+                camposErroneos.add(txtPrecio);
+            }
+
+            if (!esNumero(txtStock)) {
+                errores.add("• El campo 'Stock' debe ser un número entero.");
+                camposErroneos.add(txtStock);
+            }
+
+            if (!errores.isEmpty()) {
+                mostrarErrores(errores, camposErroneos);
+                return;
+            }
+
             producto.Crear(txtId.getText(), txtNombre.getText(), txtDesc.getText(),
                     Double.parseDouble(txtPrecio.getText()), Integer.parseInt(txtStock.getText()));
             producto.Leer(tabla);
@@ -70,6 +103,24 @@ public class Main extends JFrame {
         leer.addActionListener(e -> producto.Leer(tabla));
 
         actualizar.addActionListener(e -> {
+            List<String> errores = new ArrayList<>();
+            List<JTextField> camposErroneos = new ArrayList<>();
+
+            if (!esDouble(txtPrecio)) {
+                errores.add("• El campo 'Precio' debe ser un número real (usa punto decimal).");
+                camposErroneos.add(txtPrecio);
+            }
+
+            if (!esNumero(txtStock)) {
+                errores.add("• El campo 'Stock' debe ser un número entero.");
+                camposErroneos.add(txtStock);
+            }
+
+            if (!errores.isEmpty()) {
+                mostrarErrores(errores, camposErroneos);
+                return;
+            }
+
             producto.Actualizar(txtId.getText(), txtNombre.getText(), txtDesc.getText(),
                     Double.parseDouble(txtPrecio.getText()), Integer.parseInt(txtStock.getText()));
             producto.Leer(tabla);
@@ -126,8 +177,31 @@ public class Main extends JFrame {
         Estilos.aplicarEstiloTabla(tabla);
         JScrollPane scroll = new JScrollPane(tabla);
 
-        // Acciones
+        // --- Click en tabla para llenar los campos ---
+        tabla.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting() && tabla.getSelectedRow() != -1) {
+                txtId.setText(tabla.getValueAt(tabla.getSelectedRow(), 0).toString());
+                txtNombre.setText(tabla.getValueAt(tabla.getSelectedRow(), 1).toString());
+                txtApellido.setText(tabla.getValueAt(tabla.getSelectedRow(), 2).toString());
+                txtTelefono.setText(tabla.getValueAt(tabla.getSelectedRow(), 3).toString());
+                txtDireccion.setText(tabla.getValueAt(tabla.getSelectedRow(), 4).toString());
+            }
+        });
+
         crear.addActionListener(e -> {
+            List<String> errores = new ArrayList<>();
+            List<JTextField> camposErroneos = new ArrayList<>();
+
+            if (!esTelefonoValido(txtTelefono.getText())) {
+                errores.add("• El teléfono debe contener exactamente 10 dígitos numéricos (0-9).");
+                camposErroneos.add(txtTelefono);
+            }
+
+            if (!errores.isEmpty()) {
+                mostrarErrores(errores, camposErroneos);
+                return;
+            }
+
             cliente.Crear(txtId.getText(), txtNombre.getText(), txtApellido.getText(),
                     txtTelefono.getText(), txtDireccion.getText());
             cliente.Leer(tabla);
@@ -136,6 +210,14 @@ public class Main extends JFrame {
         leer.addActionListener(e -> cliente.Leer(tabla));
 
         actualizar.addActionListener(e -> {
+            if (!esTelefonoValido(txtTelefono.getText())) {
+                mostrarErrores(
+                        List.of("• El teléfono debe contener exactamente 10 dígitos numéricos (0-9)."),
+                        List.of(txtTelefono)
+                );
+                return;
+            }
+
             cliente.Actualizar(txtId.getText(), txtNombre.getText(), txtApellido.getText(),
                     txtTelefono.getText(), txtDireccion.getText());
             cliente.Leer(tabla);
@@ -188,8 +270,23 @@ public class Main extends JFrame {
         Estilos.aplicarEstiloTabla(tabla);
         JScrollPane scroll = new JScrollPane(tabla);
 
-        // Acciones
+        // --- Click en tabla para llenar campos ---
+        tabla.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting() && tabla.getSelectedRow() != -1) {
+                txtId.setText(tabla.getValueAt(tabla.getSelectedRow(), 0).toString());
+                txtFecha.setText(tabla.getValueAt(tabla.getSelectedRow(), 1).toString());
+                txtTotal.setText(tabla.getValueAt(tabla.getSelectedRow(), 2).toString());
+            }
+        });
+
         crear.addActionListener(e -> {
+            if (!esDouble(txtTotal)) {
+                mostrarErrores(
+                        List.of("• El campo 'Total' debe ser un número real (usa punto decimal)."),
+                        List.of(txtTotal)
+                );
+                return;
+            }
             venta.Crear(txtId.getText(), txtFecha.getText(), Double.parseDouble(txtTotal.getText()));
             venta.Leer(tabla);
         });
@@ -197,6 +294,13 @@ public class Main extends JFrame {
         leer.addActionListener(e -> venta.Leer(tabla));
 
         actualizar.addActionListener(e -> {
+            if (!esDouble(txtTotal)) {
+                mostrarErrores(
+                        List.of("• El campo 'Total' debe ser un número real (usa punto decimal)."),
+                        List.of(txtTotal)
+                );
+                return;
+            }
             venta.Actualizar(txtId.getText(), txtFecha.getText(), Double.parseDouble(txtTotal.getText()));
             venta.Leer(tabla);
         });
@@ -214,6 +318,54 @@ public class Main extends JFrame {
         panel.add(scroll, BorderLayout.CENTER);
 
         return panel;
+    }
+
+    // -------------------------------------------
+    // MÉTODOS DE VALIDACIÓN Y ERRORES
+    private boolean esNumero(JTextField campo) {
+        try {
+            Integer.parseInt(campo.getText());
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    private boolean esDouble(JTextField campo) {
+        try {
+            Double.parseDouble(campo.getText());
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    private boolean esTelefonoValido(String telefono) {
+        return telefono.matches("^[0-9]{10}$");
+    }
+
+    private void mostrarErrores(List<String> mensajes, List<JTextField> campos) {
+        StringBuilder sb = new StringBuilder("Se encontraron los siguientes errores:\n\n");
+        for (String msg : mensajes) sb.append(msg).append("\n");
+
+        JOptionPane.showMessageDialog(this, sb.toString(),
+                "Error de validación", JOptionPane.WARNING_MESSAGE);
+
+        for (JTextField campo : campos) parpadearCampo(campo);
+    }
+
+    private void parpadearCampo(JTextField campo) {
+        Color original = campo.getBackground();
+        new Thread(() -> {
+            try {
+                for (int i = 0; i < 4; i++) {
+                    campo.setBackground(Color.RED);
+                    Thread.sleep(200);
+                    campo.setBackground(original);
+                    Thread.sleep(200);
+                }
+            } catch (InterruptedException ignored) {}
+        }).start();
     }
 
     // -------------------------------------------
