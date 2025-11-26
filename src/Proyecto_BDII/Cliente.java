@@ -3,6 +3,8 @@ package Proyecto_BDII;
 import java.sql.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Cliente {
     private Connection con;
@@ -78,4 +80,32 @@ public class Cliente {
             JOptionPane.showMessageDialog(null, "Error al eliminar cliente: " + e.getMessage());
         }
     }
+
+    // --- MÉTODO AÑADIDO: Cargar combo de clientes con "ID - Nombre" ---
+    public void CargarCombo(JComboBox<String> combo) {
+        combo.removeAllItems();
+        String sql = "SELECT IDCLIENTE, NOMBRECLIENTE FROM CLIENTE";
+        try (Statement st = con.createStatement(); ResultSet rs = st.executeQuery(sql)) {
+            while (rs.next()) {
+                combo.addItem(rs.getString("IDCLIENTE") + " - " + rs.getString("NOMBRECLIENTE"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+ // Devuelve lista de clientes para ComboBox: "ID - Nombre"
+    public List<String> obtenerListaClientes() {
+        List<String> lista = new ArrayList<>();
+        String sql = "SELECT IDCLIENTE, NOMBRECLIENTE FROM CLIENTE";
+        try (Statement st = con.createStatement(); ResultSet rs = st.executeQuery(sql)) {
+            while (rs.next()) {
+                lista.add(rs.getString("IDCLIENTE") + " - " + rs.getString("NOMBRECLIENTE"));
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error al obtener clientes: " + e.getMessage());
+        }
+        return lista;
+    }
+
 }

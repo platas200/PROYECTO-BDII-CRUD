@@ -10,18 +10,15 @@ public class Conexion {
     private static final String USER = "root";
     private static final String PASSWORD = "root";
 
-    private static Connection con = null;
-
-    // Método estático que devuelve la conexión
+    // Siempre retorna una NUEVA conexión
     public static Connection getConexion() {
-        if (con == null) {
-            try {
-                con = DriverManager.getConnection(URL, USER, PASSWORD);
-                System.out.println("✅ Conexión exitosa a la base de datos.");
-            } catch (SQLException e) {
-                System.out.println("❌ Error en la conexión: " + e.getMessage());
-            }
+        try {
+            Connection nuevaConexion = DriverManager.getConnection(URL, USER, PASSWORD);
+            // System.out.println("🔄 Nueva conexión abierta correctamente.");
+            return nuevaConexion;
+        } catch (SQLException e) {
+            System.out.println("❌ Error abriendo conexión: " + e.getMessage());
+            return null;
         }
-        return con;
     }
 }
