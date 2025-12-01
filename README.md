@@ -22,3 +22,7 @@ La base de datos se encuentra en la carpeta `BaseDeDatos`:
 1. Abrir el proyecto en tu IDE Java (ej. IntelliJ, Eclipse, NetBeans).
 2. Configurar la conexión a MySQL (`Conexion.java`).
 3. Ejecutar `Main.java`.
+
+## 🎥 Video de demostración
+Puedes ver el video de evidencia de concurrencia aquí:
+👉 [Ver video en Google Drive](https://drive.google.com/file/d/1eDfSyDiNhpqNJA2J8uhdS7FrNZeRCiyB/view?usp=sharing)
